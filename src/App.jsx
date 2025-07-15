@@ -1,0 +1,104 @@
+  import { useState,useEffect } from 'react'
+  import reactLogo from './assets/react.svg'
+  import viteLogo from '/vite.svg'
+  import './App.css'
+  import Search from './components/Search.jsx'
+
+  const API_BASE_URL = "https://api.themoviedb.org/3"
+  const API_KEY = import.meta.env.VITE_TMDB_API_KEY
+  const API_OPTIONS = {
+  method: 'GET',
+  headers: {
+    Accept: 'application/json',
+    Authorization: `Bearer ${API_KEY}`,
+  }
+ };
+
+
+
+  
+  const App=()=>{
+
+
+    const [SearchTerm, setSearchTerm] = useState('')
+    const [errorMessage,setErrorMessage]=useState('')
+    
+    
+
+    const fetchMovies=async()=>{
+      try{
+
+        const endpoint= `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`
+        const response=await fetch(endpoint,API_OPTIONS)
+        // alert(response)
+
+        if(!response.ok){
+          throw new Error("failed to fetch new movies");
+          
+        }
+
+      }catch(err){
+        console.log(err)
+        setErrorMessage('error fetching movies')
+      }
+    }
+
+    useEffect(() => {fetchMovies()}, [])
+
+    
+    
+
+    return(
+      <main>
+        <div className="pattern"/>
+
+        <div className="wrapper">
+          <header>
+            <img src="./hero-img.png" alt="hero banner"/>
+            <h1>
+              Find <span className="text-gradient">Movies</span> you'll enjoy
+            </h1>
+            <Search SearchTerm={SearchTerm} setSearchTerm={setSearchTerm}/>            
+          </header>
+
+
+          <section className="all-movies">
+            <h2>
+              All movies
+            </h2>
+
+            {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+          </section>
+ 
+
+        </div>
+
+      </main>
+    )
+
+  }
+
+  // const Card_comp=(props)=>{
+    
+  //   const [count,setCount]=useState(0)
+  //   const [hasLiked,setHasLiked]=useState(false);
+  //   useEffect(() => {console.log(  `${props.name} is being ${hasLiked}` )}, [hasLiked,count])
+    
+
+  //   return(
+  //         <div className='card' onClick={()=>setCount(count+1)} >
+
+
+  //           <h2>{props.name} {count?count:null}</h2>
+
+  //           <button onClick={()=> setHasLiked(!hasLiked)}>
+  //                     {hasLiked?"Liked":"Like"}
+  //           </button>
+          
+
+            
+  //         </div>
+  //   )
+  // }
+
+  export default App

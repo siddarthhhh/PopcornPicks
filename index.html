@@ -1,0 +1,28 @@
+<!-- index.html
+   ↓
+loads → /src/main.jsx
+   ↓
+main.jsx imports App and renders it into <div id="root">
+   ↓
+App.jsx → Returns JSX → Visible UI in browser
+ -->
+<!-- 
+ files in public contian statis assets dont need to go through vite's bundler
+ can be direclty refernced by their path -->
+
+
+
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + React</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
