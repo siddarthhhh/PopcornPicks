@@ -3,6 +3,11 @@
   import viteLogo from '/vite.svg'
   import './App.css'
   import Search from './components/Search.jsx'
+  import Spinner from './components/Spinner.jsx'
+  import MovieCard from './components/MovieCard.jsx'
+  import './index.css'
+
+
 
   const API_BASE_URL = "https://api.themoviedb.org/3"
   const API_KEY = import.meta.env.VITE_TMDB_API_KEY
@@ -22,11 +27,16 @@
 
     const [SearchTerm, setSearchTerm] = useState('')
     const [errorMessage,setErrorMessage]=useState('')
+    const [movieList,setMovieList]=useState([])
+    const [isLoading,setIsLoading]=useState(false)
     
     
 
     const fetchMovies=async()=>{
       try{
+
+        setIsLoading(true);
+        setErrorMessage('')
 
         const endpoint= `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`
         const response=await fetch(endpoint,API_OPTIONS)
@@ -36,10 +46,20 @@
           throw new Error("failed to fetch new movies");
           
         }
+        const data=await response.json();
+        // console.log(data)
+        if(data.response=='false'){
+          setErrorMessage(data.error || "failed to fetch movies")
+          setMovieList([])
+          return;
+        }
+        setMovieList(data.results || [])
 
-      }catch(err){
-        console.log(err)
+      }catch(error){
+        console.log(error)
         setErrorMessage('error fetching movies')
+      }finally{
+        setIsLoading(false)
       }
     }
 
@@ -63,11 +83,27 @@
 
 
           <section className="all-movies">
-            <h2>
+            <h2 className="mt-40px">
               All movies
             </h2>
 
-            {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+            {/* {errorMessage && <p className="text-red-500">{errorMessage}</p>} */}
+
+            {isLoading ? (
+              <Spinner/>
+            ) : errorMessage ? (
+              <p className="text-red-500">{errorMessage}</p>
+            ) : (
+              <ul>
+                {movieList.map((movie)=>{
+                  return(
+                    <MovieCard key={movie.id} movie={movie}/>
+                  )
+                })}
+              </ul>
+            )}
+
+
           </section>
  
 
